@@ -1,5 +1,6 @@
 package com.ozkan.bazaar.model;
 
+import com.ozkan.bazaar.domain.USER_ROLE;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,6 +37,8 @@ public class Seller {
     private Address pickupAddress = new Address();
 
     private String GSTIN;
+
+    private USER_ROLE role = USER_ROLE.ROLE_SELLER;
 
 
 }

@@ -1,12 +1,11 @@
 package com.ozkan.bazaar.repository;
 
-import com.ozkan.bazaar.model.User;
+import com.ozkan.bazaar.model.Seller;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IUserRepository extends JpaRepository<User,Long> {
+public interface ISellerRepository extends JpaRepository<Seller,Long> {
 
-    User findByEmail(String email);
-
+    Seller findByEmail(String email);
 }

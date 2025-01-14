@@ -19,7 +19,7 @@ public class VerificationCode {
 
     private String otp;
 
-    private String mail;
+    private String email;
 
     @OneToOne
     private User user;

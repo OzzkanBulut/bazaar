@@ -1,8 +1,13 @@
 package com.ozkan.bazaar.controller;
 
+import com.ozkan.bazaar.domain.USER_ROLE;
 import com.ozkan.bazaar.model.User;
+import com.ozkan.bazaar.model.VerificationCode;
 import com.ozkan.bazaar.repository.IUserRepository;
+import com.ozkan.bazaar.response.ApiResponse;
+import com.ozkan.bazaar.response.AuthResponse;
 import com.ozkan.bazaar.response.SignUpRequest;
+import com.ozkan.bazaar.service.impl.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,16 +21,29 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final IUserRepository userRepository;
+    private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<User> createUserHandler(@RequestBody SignUpRequest request) {
+    public ResponseEntity<AuthResponse> createUserHandler(@RequestBody SignUpRequest request) throws Exception {
 
-        User user = new User();
-        user.setEmail(request.getEmail());
-        user.setFullName(request.getFullName());
+        String jwt = authService.createUser(request);
 
-        User savedUser = userRepository.save(user);
+        AuthResponse response = new AuthResponse();
+        response.setJwt(jwt);
+        response.setMessage("Register success");
+        response.setRole(USER_ROLE.ROLE_CUSTOMER);
 
-        return ResponseEntity.ok(savedUser);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/sent/login-signup-otp")
+    public ResponseEntity<ApiResponse> sentOtpHandler(@RequestBody VerificationCode request) throws Exception {
+
+        authService.sentLoginOtp(request.getEmail());
+
+        ApiResponse response = new ApiResponse();
+        response.setMessage("Otp Sent Successfully");
+
+        return ResponseEntity.ok(response);
     }
 }
