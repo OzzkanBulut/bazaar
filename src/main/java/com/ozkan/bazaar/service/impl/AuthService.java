@@ -4,9 +4,11 @@ package com.ozkan.bazaar.service.impl;
 import com.ozkan.bazaar.config.JwtProvider;
 import com.ozkan.bazaar.domain.USER_ROLE;
 import com.ozkan.bazaar.model.Cart;
+import com.ozkan.bazaar.model.Seller;
 import com.ozkan.bazaar.model.User;
 import com.ozkan.bazaar.model.VerificationCode;
 import com.ozkan.bazaar.repository.ICartRepository;
+import com.ozkan.bazaar.repository.ISellerRepository;
 import com.ozkan.bazaar.repository.IUserRepository;
 import com.ozkan.bazaar.repository.IVerificationCodeRepository;
 import com.ozkan.bazaar.request.LoginRequest;
@@ -35,6 +37,7 @@ import java.util.List;
 public class AuthService implements IAuthService {
 
     private final IUserRepository userRepository;
+    private final ISellerRepository sellerRepository;
     private final PasswordEncoder passwordEncoder;
     private final ICartRepository cartRepository;
     private final JwtProvider jwtProvider;
@@ -44,17 +47,32 @@ public class AuthService implements IAuthService {
 
 
     @Override
-    public void sentLoginOtp(String email) throws Exception {
+    public void sentLoginOtp(String email,USER_ROLE role) throws Exception {
         String SIGNING_PREFIX="signin_";
+//        String SELLER_PREFIX="seller_";
 
         if(email.startsWith(SIGNING_PREFIX)){
-            email.substring(SIGNING_PREFIX.length());
+            email = email.substring(SIGNING_PREFIX.length());
 
-            User user = userRepository.findByEmail(email);
+            if(role.equals(USER_ROLE.ROLE_SELLER)){
 
-            if(user==null){
-                throw new Exception("User not exist with provided email");
+                Seller seller = sellerRepository.findByEmail(email);
+                if(seller == null){
+                    throw new Exception("Seller not found");
+                }
             }
+            else {
+
+                User user = userRepository.findByEmail(email);
+
+                if(user==null){
+                    throw new Exception("User not exist with provided email");
+                }
+            }
+
+
+
+
 
         }
 

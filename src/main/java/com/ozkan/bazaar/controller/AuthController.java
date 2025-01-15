@@ -4,6 +4,7 @@ import com.ozkan.bazaar.domain.USER_ROLE;
 import com.ozkan.bazaar.model.User;
 import com.ozkan.bazaar.model.VerificationCode;
 import com.ozkan.bazaar.repository.IUserRepository;
+import com.ozkan.bazaar.request.LoginOtpRequest;
 import com.ozkan.bazaar.request.LoginRequest;
 import com.ozkan.bazaar.response.ApiResponse;
 import com.ozkan.bazaar.response.AuthResponse;
@@ -38,9 +39,9 @@ public class AuthController {
     }
 
     @PostMapping("/sent/login-signup-otp")
-    public ResponseEntity<ApiResponse> sentOtpHandler(@RequestBody VerificationCode request) throws Exception {
+    public ResponseEntity<ApiResponse> sentOtpHandler(@RequestBody LoginOtpRequest request) throws Exception {
 
-        authService.sentLoginOtp(request.getEmail());
+        authService.sentLoginOtp(request.getEmail(), request.getRole());
 
         ApiResponse response = new ApiResponse();
         response.setMessage("Otp Sent Successfully");

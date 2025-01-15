@@ -1,5 +1,6 @@
 package com.ozkan.bazaar.model;
 
+import com.ozkan.bazaar.domain.AccountStatus;
 import com.ozkan.bazaar.domain.USER_ROLE;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -39,6 +40,10 @@ public class Seller {
     private String GSTIN;
 
     private USER_ROLE role = USER_ROLE.ROLE_SELLER;
+
+    private boolean isEmailVerified = false;
+
+    private AccountStatus accountStatus = AccountStatus.PENDING_VERIFICATION;
 
 
 }
