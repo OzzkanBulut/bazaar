@@ -9,20 +9,25 @@ import com.ozkan.bazaar.model.VerificationCode;
 import com.ozkan.bazaar.repository.ICartRepository;
 import com.ozkan.bazaar.repository.IUserRepository;
 import com.ozkan.bazaar.repository.IVerificationCodeRepository;
+import com.ozkan.bazaar.request.LoginRequest;
+import com.ozkan.bazaar.response.AuthResponse;
 import com.ozkan.bazaar.response.SignUpRequest;
 import com.ozkan.bazaar.service.IAuthService;
 import com.ozkan.bazaar.utils.OtpUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -35,6 +40,7 @@ public class AuthService implements IAuthService {
     private final JwtProvider jwtProvider;
     private final IVerificationCodeRepository verificationCodeRepository;
     private final EmailService emailService;
+    private final CustomUserDetailsService customUserDetailsService;
 
 
     @Override
@@ -72,11 +78,6 @@ public class AuthService implements IAuthService {
 
         emailService.sendVerificationOtpEmail(email,otp,subject,text);
 
-
-
-
-
-
     }
 
     @Override
@@ -113,6 +114,47 @@ public class AuthService implements IAuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return jwtProvider.generateToken(authentication);
+
+    }
+
+    @Override
+    public AuthResponse signin(LoginRequest loginrequest) {
+        String userName = loginrequest.getEmail();
+        String otp = loginrequest.getOtp();
+
+        Authentication authentication = authenticate(userName,otp);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String token = jwtProvider.generateToken(authentication);
+
+        AuthResponse authResponse = new AuthResponse();
+        authResponse.setJwt(token);
+        authResponse.setMessage("Login Success");
+
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+        String roleName = authorities.isEmpty()?null: authorities.iterator().next().getAuthority();
+
+        authResponse.setRole(USER_ROLE.valueOf(roleName));
+
+        return authResponse;
+
+    }
+
+    private Authentication authenticate(String userName, String otp) {
+
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userName);
+
+        if(userDetails==null){
+            throw new BadCredentialsException(("Invalid username"));
+        }
+        VerificationCode verificationCode = verificationCodeRepository.findByEmail(userName);
+
+        if(verificationCode==null || !verificationCode.getOtp().equals(otp)){
+            throw new BadCredentialsException("Wrong Otp");
+        }
+
+        return new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
 
     }
 }

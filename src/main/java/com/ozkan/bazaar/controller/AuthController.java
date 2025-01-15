@@ -4,6 +4,7 @@ import com.ozkan.bazaar.domain.USER_ROLE;
 import com.ozkan.bazaar.model.User;
 import com.ozkan.bazaar.model.VerificationCode;
 import com.ozkan.bazaar.repository.IUserRepository;
+import com.ozkan.bazaar.request.LoginRequest;
 import com.ozkan.bazaar.response.ApiResponse;
 import com.ozkan.bazaar.response.AuthResponse;
 import com.ozkan.bazaar.response.SignUpRequest;
@@ -45,5 +46,13 @@ public class AuthController {
         response.setMessage("Otp Sent Successfully");
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/signin")
+    public ResponseEntity<AuthResponse> loginHandler(@RequestBody LoginRequest loginRequest) throws Exception {
+
+        AuthResponse authResponse = authService.signin(loginRequest);
+
+        return ResponseEntity.ok(authResponse);
     }
 }

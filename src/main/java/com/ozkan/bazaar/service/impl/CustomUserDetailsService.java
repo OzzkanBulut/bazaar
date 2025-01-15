@@ -20,8 +20,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private IUserRepository userRepository;
-    private ISellerRepository sellerRepository;
+    private final IUserRepository userRepository;
+    private final  ISellerRepository sellerRepository;
     private static final String SELLER_PREFIX = "seller_";
 
 
@@ -49,7 +49,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (role == null) role = USER_ROLE.ROLE_CUSTOMER;
 
         List<GrantedAuthority> authorityList = new ArrayList<>();
-        authorityList.add(new SimpleGrantedAuthority("ROLE_" + role));
+        authorityList.add(new SimpleGrantedAuthority(role.toString()));
 
         return new org.springframework.security.core.userdetails.User(email,
                 password, authorityList);
