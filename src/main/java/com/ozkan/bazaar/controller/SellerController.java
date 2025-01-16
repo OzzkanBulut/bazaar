@@ -2,6 +2,7 @@ package com.ozkan.bazaar.controller;
 
 import com.ozkan.bazaar.config.JwtProvider;
 import com.ozkan.bazaar.domain.AccountStatus;
+import com.ozkan.bazaar.exceptions.SellerException;
 import com.ozkan.bazaar.model.Seller;
 import com.ozkan.bazaar.model.VerificationCode;
 import com.ozkan.bazaar.repository.IVerificationCodeRepository;
@@ -85,7 +86,7 @@ public class SellerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Seller> getSellerById(@PathVariable Long id) throws Exception{
+    public ResponseEntity<Seller> getSellerById(@PathVariable Long id) throws SellerException {
 
         Seller seller = sellerService.getSellerById(id);
         return new ResponseEntity<>(seller,HttpStatus.OK);

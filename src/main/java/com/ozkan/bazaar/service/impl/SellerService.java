@@ -3,6 +3,7 @@ package com.ozkan.bazaar.service.impl;
 import com.ozkan.bazaar.config.JwtProvider;
 import com.ozkan.bazaar.domain.AccountStatus;
 import com.ozkan.bazaar.domain.USER_ROLE;
+import com.ozkan.bazaar.exceptions.SellerException;
 import com.ozkan.bazaar.model.Address;
 import com.ozkan.bazaar.model.Seller;
 import com.ozkan.bazaar.repository.IAddressRepository;
@@ -57,9 +58,9 @@ public class SellerService implements ISellerService {
     }
 
     @Override
-    public Seller getSellerById(Long id) throws Exception {
+    public Seller getSellerById(Long id) throws SellerException {
        return sellerRepository.findById(id).orElseThrow(
-                ()-> new Exception("Seller not found with id:"+id)
+                ()-> new SellerException("Seller not found with id:"+id)
         );
 
     }

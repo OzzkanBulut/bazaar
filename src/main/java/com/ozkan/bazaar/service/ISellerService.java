@@ -1,6 +1,7 @@
 package com.ozkan.bazaar.service;
 
 import com.ozkan.bazaar.domain.AccountStatus;
+import com.ozkan.bazaar.exceptions.SellerException;
 import com.ozkan.bazaar.model.Seller;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public interface ISellerService {
 
     Seller createSeller(Seller seller) throws Exception;
 
-    Seller getSellerById(Long id) throws Exception;
+    Seller getSellerById(Long id) throws SellerException;
 
     Seller getSellerByEmail(String email) throws Exception;
 
