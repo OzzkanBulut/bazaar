@@ -9,7 +9,7 @@ public interface IAuthService {
 
     void sentLoginOtp(String email, USER_ROLE role) throws Exception;
     String createUser(SignUpRequest request) throws Exception;
-    AuthResponse signin(LoginRequest loginrequest);
+    AuthResponse signin(LoginRequest loginrequest) throws Exception;
 
 
 

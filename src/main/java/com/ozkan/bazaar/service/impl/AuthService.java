@@ -136,7 +136,7 @@ public class AuthService implements IAuthService {
     }
 
     @Override
-    public AuthResponse signin(LoginRequest loginrequest) {
+    public AuthResponse signin(LoginRequest loginrequest) throws Exception {
         String userName = loginrequest.getEmail();
         String otp = loginrequest.getOtp();
 
@@ -159,12 +159,18 @@ public class AuthService implements IAuthService {
 
     }
 
-    private Authentication authenticate(String userName, String otp) {
+    private Authentication authenticate(String userName, String otp) throws Exception {
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(userName);
 
+        String SELLER_PREFIX ="seller_";
+
+        if(userName.startsWith(SELLER_PREFIX)){
+            userName = userName.substring(SELLER_PREFIX.length());
+        }
+
         if(userDetails==null){
-            throw new BadCredentialsException(("Invalid username"));
+            throw new Exception(("Invalid username"));
         }
         VerificationCode verificationCode = verificationCodeRepository.findByEmail(userName);
 
