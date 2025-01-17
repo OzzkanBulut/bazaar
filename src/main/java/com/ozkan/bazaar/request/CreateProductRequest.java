@@ -20,9 +20,8 @@ public class CreateProductRequest {
     private int sellingPrice;
     private String color;
     private List<String> images;
-    private String category;
-    private String category2;
-    private String category3;
+    private List<String> categories;  // Changed from separate category fields to a list
+
     private String sizes;
 
 

@@ -32,40 +32,43 @@ public class ProductService implements IProductService {
     @Override
     public Product createProduct(CreateProductRequest req, Seller seller) {
 
-        Category category1 = categoryRepository.findByCategoryId(req.getCategory());
+        // Find the parent category first
+        Category parentCategory = null;
 
-        if(category1 == null){
-            Category category = new Category();
-            category.setCategoryId(req.getCategory());
-            category.setLevel(1);
-            category1 = categoryRepository.save(category);
+        if (!req.getCategories().isEmpty()) {
+            parentCategory = categoryRepository.findByCategoryId(req.getCategories().get(0));
+
+            if (parentCategory == null) {
+                parentCategory = new Category();
+                parentCategory.setCategoryId(req.getCategories().get(0));
+                parentCategory.setLevel(1);
+                categoryRepository.save(parentCategory);
+            }
+
+            Category currentCategory = parentCategory;
+
+            for (int i = 1; i < req.getCategories().size(); i++) {
+                String categoryId = req.getCategories().get(i);
+
+                Category childCategory = categoryRepository.findByCategoryId(categoryId);
+
+                if (childCategory == null) {
+                    childCategory = new Category();
+                    childCategory.setCategoryId(categoryId);
+                    childCategory.setLevel(i + 1);
+                    childCategory.setParentCategory(currentCategory);
+                    currentCategory = categoryRepository.save(childCategory);
+                } else {
+                    currentCategory = childCategory;
+                }
+            }
         }
 
-        Category category2 = categoryRepository.findByCategoryId(req.getCategory2());
-
-        if(category2 == null){
-            Category category = new Category();
-            category.setCategoryId(req.getCategory2());
-            category.setLevel(2);
-            category.setParentCategory(category1);
-            category2 = categoryRepository.save(category);
-        }
-
-        Category category3= categoryRepository.findByCategoryId(req.getCategory3());
-
-        if (category3==null){
-            Category category = new Category();
-            category.setCategoryId(req.getCategory3());
-            category.setLevel(3);
-            category.setParentCategory(category2);
-            category3 = categoryRepository.save(category);
-        }
-
-        int discountPercentage = calculateDiscountPercentage( req.getMrpPrice(),req.getSellingPrice());
+        int discountPercentage = calculateDiscountPercentage(req.getMrpPrice(), req.getSellingPrice());
 
         Product product = new Product();
         product.setSeller(seller);
-        product.setCategory(category3);
+        product.setCategory(parentCategory);  // Set the top-level category
         product.setDescription(req.getDescription());
         product.setCreatedAt(LocalDateTime.now());
         product.setTitle(req.getTitle());
@@ -77,9 +80,6 @@ public class ProductService implements IProductService {
         product.setDiscountPercent(discountPercentage);
 
         return productRepository.save(product);
-
-
-
     }
 
     private int calculateDiscountPercentage(int mrpPrice, int sellingPrice) {
