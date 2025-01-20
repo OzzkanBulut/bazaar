@@ -4,12 +4,14 @@ import com.ozkan.bazaar.config.JwtProvider;
 import com.ozkan.bazaar.domain.AccountStatus;
 import com.ozkan.bazaar.exceptions.SellerException;
 import com.ozkan.bazaar.model.Seller;
+import com.ozkan.bazaar.model.SellerReport;
 import com.ozkan.bazaar.model.VerificationCode;
 import com.ozkan.bazaar.repository.IVerificationCodeRepository;
 import com.ozkan.bazaar.request.LoginRequest;
 import com.ozkan.bazaar.response.ApiResponse;
 import com.ozkan.bazaar.response.AuthResponse;
 import com.ozkan.bazaar.service.IAuthService;
+import com.ozkan.bazaar.service.ISellerReportService;
 import com.ozkan.bazaar.service.ISellerService;
 import com.ozkan.bazaar.service.impl.EmailService;
 import com.ozkan.bazaar.utils.OtpUtil;
@@ -26,6 +28,7 @@ import java.util.List;
 public class SellerController {
 
     private final ISellerService sellerService;
+    private final ISellerReportService sellerReportService;
     private final IVerificationCodeRepository verificationCodeRepository;
     private final IAuthService authService;
     private final EmailService emailService;
@@ -104,6 +107,16 @@ public class SellerController {
 
     }
 
+    @GetMapping("/report")
+    public ResponseEntity<SellerReport> getSellerReport(
+            @RequestHeader("Authorization") String jwt
+    ) throws Exception {
+
+        Seller seller = sellerService.getSellerProfile(jwt);
+        SellerReport sellerReport = sellerReportService.getSellerReport(seller);
+        return ResponseEntity.ok(sellerReport);
+    }
+
     @GetMapping
     public ResponseEntity<List<Seller>> getAllSellers(@RequestParam(required = false)
                                                           AccountStatus accountStatus){
@@ -126,12 +139,8 @@ public class SellerController {
     public ResponseEntity<Void> deleteSeller(@PathVariable Long id) throws Exception {
 
         sellerService.deleteSeller(id);
+
         return ResponseEntity.noContent().build();
-
-
-
-
-
     }
 
 }
