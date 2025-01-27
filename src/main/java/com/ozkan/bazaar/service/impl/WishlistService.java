@@ -23,7 +23,7 @@ public class WishlistService implements IWishlistService {
 
     @Override
     public Wishlist getWishlistByUserId(User user) {
-        Wishlist wishlist = wishListRepository.findByUser(user.getId());
+        Wishlist wishlist = wishListRepository.findByUserId(user.getId());
         if (wishlist == null) {
             wishlist = createWishlist(user);
         }
