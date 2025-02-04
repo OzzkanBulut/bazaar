@@ -71,9 +71,6 @@ public class AuthService implements IAuthService {
             }
 
 
-
-
-
         }
 
         VerificationCode doesExist = verificationCodeRepository.findByEmail(email);
