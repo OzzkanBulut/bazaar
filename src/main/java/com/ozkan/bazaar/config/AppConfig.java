@@ -14,7 +14,9 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
@@ -27,9 +29,11 @@ public class AppConfig {
         http.sessionManagement(management -> management.sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS
                 )).authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/api/products/*/reviews").permitAll()
                         .requestMatchers("/sellers/**").permitAll()
+                        .requestMatchers("/auth/signin").permitAll()  // Allow unauthenticated access to signin
+
                         .anyRequest().permitAll())
 
                 .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
@@ -43,34 +47,37 @@ public class AppConfig {
 
     private CorsConfigurationSource corsConfigurationSource() {
 
-        return new CorsConfigurationSource() {
-            @Override
-            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+        CorsConfiguration cfg = new CorsConfiguration();
+        cfg.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+        cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        cfg.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
+        cfg.setAllowedMethods(Collections.singletonList("*"));
+        cfg.setAllowedHeaders(Collections.singletonList("*"));
+        cfg.setAllowCredentials(true);
+        cfg.setExposedHeaders(Collections.singletonList("Authorization"));
+        cfg.setMaxAge(3600L);
 
-                CorsConfiguration cfg = new CorsConfiguration();
-                cfg.setAllowedOrigins(Collections.singletonList("*"));
-                cfg.setAllowedMethods(Collections.singletonList("*"));
-                cfg.setAllowedHeaders(Collections.singletonList("*"));
-                cfg.setAllowCredentials(true);
-                cfg.setExposedHeaders(Collections.singletonList("Authorization"));
-                cfg.setMaxAge(3600l);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", cfg); // Register CORS configuration for all endpoints
+        return source;
 
-                return cfg;
-            }
-        };
     }
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
 
-        return new BCryptPasswordEncoder();
-    }
+;
 
-    @Bean
-    public RestTemplate restTemplate() {
 
-        return new RestTemplate();
-    }
+@Bean
+PasswordEncoder passwordEncoder() {
+
+    return new BCryptPasswordEncoder();
+}
+
+@Bean
+public RestTemplate restTemplate() {
+
+    return new RestTemplate();
+}
 
 
 }

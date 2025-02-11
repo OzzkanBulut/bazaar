@@ -77,7 +77,7 @@ public class ProductService implements IProductService {
         product.setImages(req.getImages());
         product.setMrpPrice(req.getMrpPrice());
         product.setSizes(req.getSizes());
-        product.setDiscountPercent(discountPercentage);
+        product.setDiscountPercentage(discountPercentage);
 
         return productRepository.save(product);
     }

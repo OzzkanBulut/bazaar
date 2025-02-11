@@ -27,6 +27,7 @@ public class OrderController {
     private final IPaymentService paymentService;
     private final IPaymentOrderRepository paymentOrderRepository;
 
+    @PostMapping
     public ResponseEntity<PaymentLinkResponse> createOrderHandler(
             @RequestBody Address shippingAddress,
             @RequestParam PaymentMethod paymentMethod,
@@ -93,6 +94,7 @@ public class OrderController {
     }
 
 
+    @GetMapping("/{orderId}/cancel")
     public ResponseEntity<Order> cancelOrder(
             @PathVariable Long orderId,
             @RequestHeader("Authorization") String jwt
