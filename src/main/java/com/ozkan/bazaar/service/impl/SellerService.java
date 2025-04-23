@@ -76,8 +76,8 @@ public class SellerService implements ISellerService {
     }
 
     @Override
-    public List<Seller> getAllSellers(AccountStatus status) {
-        return sellerRepository.findAllByAccountStatus(status);
+    public List<Seller> getAllSellers() {
+        return sellerRepository.findAll();
     }
 
     @Override

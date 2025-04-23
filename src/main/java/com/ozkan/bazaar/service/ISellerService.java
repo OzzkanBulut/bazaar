@@ -16,7 +16,7 @@ public interface ISellerService {
 
     Seller getSellerByEmail(String email) throws Exception;
 
-    List<Seller> getAllSellers(AccountStatus status);
+    List<Seller> getAllSellers();
 
     Seller updateSeller(Long id, Seller seller) throws Exception;
 

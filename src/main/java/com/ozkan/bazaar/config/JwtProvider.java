@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,6 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
+@Log4j2
 public class JwtProvider {
 
     SecretKey key = Keys.hmacShaKeyFor(JWT_CONSTANT.SECRET_KEY.getBytes());
@@ -42,6 +44,9 @@ public class JwtProvider {
 
         Claims claims = Jwts.parserBuilder().setSigningKey(key).build().
                 parseClaimsJws(jwt).getBody();
+
+
+        System.out.println("EMAIIIIIIIIIIIIIIIIIIIIIIIIIL   "+claims.get("email"));
 
         return String.valueOf(claims.get("email"));
 

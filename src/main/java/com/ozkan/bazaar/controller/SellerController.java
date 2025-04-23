@@ -120,7 +120,7 @@ public class SellerController {
     @GetMapping
     public ResponseEntity<List<Seller>> getAllSellers(@RequestParam(required = false)
                                                           AccountStatus accountStatus){
-        return ResponseEntity.ok(sellerService.getAllSellers(accountStatus));
+        return ResponseEntity.ok(sellerService.getAllSellers());
 
 
     }

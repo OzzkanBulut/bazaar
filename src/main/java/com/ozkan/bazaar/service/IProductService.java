@@ -5,6 +5,7 @@ import com.ozkan.bazaar.model.Product;
 import com.ozkan.bazaar.model.Seller;
 import com.ozkan.bazaar.request.CreateProductRequest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface IProductService {
 
     public void deleteProduct(Long productId) throws ProductException;
 
-    public Product updateProduct(Long productId, Product product) throws ProductException;
+    public Product updateProduct(Long productId,Long sellerId, Product product) throws ProductException;
 
     public Product findProductById(Long productId) throws ProductException;
 
@@ -35,11 +36,8 @@ public interface IProductService {
     );
 
     // This is for seller dashboard, seller can get his products
-    List<Product> getProductBySellerId(Long sellerId);
+     Page<Product> getProductsBySellerId(Long sellerId, Pageable pageable);
 
 
-
-
-
-
+    Product getProductById(Long productId);
 }

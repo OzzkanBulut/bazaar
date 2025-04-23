@@ -6,6 +6,7 @@ import com.ozkan.bazaar.model.Product;
 import com.ozkan.bazaar.model.Seller;
 import com.ozkan.bazaar.repository.ICategoryRepository;
 import com.ozkan.bazaar.repository.IProductRepository;
+import com.ozkan.bazaar.repository.ISellerRepository;
 import com.ozkan.bazaar.request.CreateProductRequest;
 import com.ozkan.bazaar.service.IProductService;
 import jakarta.persistence.criteria.Join;
@@ -16,10 +17,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -28,6 +34,9 @@ public class ProductService implements IProductService {
 
     private final IProductRepository productRepository;
     private final ICategoryRepository categoryRepository;
+    private final RestTemplate restTemplate;
+    private final AuthService authService;
+    private final ISellerRepository sellerRepository;
 
     @Override
     public Product createProduct(CreateProductRequest req, Seller seller) {
@@ -35,7 +44,7 @@ public class ProductService implements IProductService {
         // Find the parent category first
         Category parentCategory = null;
 
-        if (!req.getCategories().isEmpty()) {
+        if (req.getCategories() !=null && !req.getCategories().isEmpty()) {
             parentCategory = categoryRepository.findByCategoryId(req.getCategories().get(0));
 
             if (parentCategory == null) {
@@ -101,12 +110,53 @@ public class ProductService implements IProductService {
 
 
     @Override
-    public Product updateProduct(Long productId, Product product) throws ProductException {
+    public Product updateProduct(Long productId, Long sellerId, Product updatedProduct) {
+        // Find the existing product
+        Product existingProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        Product product1 = findProductById(productId);
-        product.setId(productId);
+        // Ensure the seller owns the product
+        if (!existingProduct.getSeller().getId().equals(sellerId)) {
+            throw new RuntimeException("Unauthorized: You can only update your own products");
+        }
 
-        return productRepository.save(product);
+        // Update only the fields that are provided (not null)
+        if (updatedProduct.getTitle() != null) {
+            existingProduct.setTitle(updatedProduct.getTitle());
+        }
+        if (updatedProduct.getDescription() != null) {
+            existingProduct.setDescription(updatedProduct.getDescription());
+        }
+        if (updatedProduct.getMrpPrice() != 0) {
+            existingProduct.setMrpPrice(updatedProduct.getMrpPrice());
+        }
+        if (updatedProduct.getSellingPrice() != 0) {
+            existingProduct.setSellingPrice(updatedProduct.getSellingPrice());
+        }
+        if (updatedProduct.getDiscountPercentage() != 0) {
+            existingProduct.setDiscountPercentage(updatedProduct.getDiscountPercentage());
+        }
+        if (updatedProduct.getQuantity() != 0) {
+            existingProduct.setQuantity(updatedProduct.getQuantity());
+        }
+        if (updatedProduct.getColor() != null) {
+            existingProduct.setColor(updatedProduct.getColor());
+        }
+        if (updatedProduct.getImages() != null && !updatedProduct.getImages().isEmpty()) {
+            existingProduct.setImages(updatedProduct.getImages());
+        }
+        if (updatedProduct.getNumRatings() != 0) {
+            existingProduct.setNumRatings(updatedProduct.getNumRatings());
+        }
+        if (updatedProduct.getCategory() != null) {
+            existingProduct.setCategory(updatedProduct.getCategory());
+        }
+        if (updatedProduct.getSizes() != null) {
+            existingProduct.setSizes(updatedProduct.getSizes());
+        }
+
+        // Save the updated product
+        return productRepository.save(existingProduct);
     }
 
     @Override
@@ -186,8 +236,14 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<Product> getProductBySellerId(Long sellerId) {
-        return productRepository.findBySellerId(sellerId);
+    public Page<Product> getProductsBySellerId(Long sellerId, Pageable pageable) {
+        return productRepository.findBySellerId(sellerId,pageable);
     }
+
+    @Override
+    public Product getProductById(Long productId) {
+        return productRepository.findById(productId).orElseThrow(()-> new RuntimeException("Product not found"));
+    }
+
 
 }

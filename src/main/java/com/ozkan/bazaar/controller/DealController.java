@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/deals")
@@ -20,6 +22,11 @@ public class DealController {
             @RequestBody Deal deal
     ) {
         return ResponseEntity.ok(dealService.createDeal(deal));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Deal>> getAllDeals(){
+        return ResponseEntity.ok(dealService.getDeals());
     }
 
     @PatchMapping("/{id}")

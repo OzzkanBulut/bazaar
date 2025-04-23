@@ -33,7 +33,7 @@ public class PaymentOrder {
     @ManyToOne
     private User user;
 
-    @OneToMany
+    @OneToMany(mappedBy = "paymentOrder", cascade = CascadeType.ALL)
     private Set<Order> orders = new HashSet<>();
 
 

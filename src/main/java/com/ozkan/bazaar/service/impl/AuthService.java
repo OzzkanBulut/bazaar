@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -63,11 +64,8 @@ public class AuthService implements IAuthService {
             }
             else {
 
-                User user = userRepository.findByEmail(email);
+                User user = userRepository.findByEmail(email).orElseThrow(()->new Exception("User not exist with provided email"));
 
-                if(user==null){
-                    throw new Exception("User not exist with provided email");
-                }
             }
 
 
@@ -104,9 +102,11 @@ public class AuthService implements IAuthService {
             throw new Exception("Wrong otp!");
         }
 
-        User user = userRepository.findByEmail(request.getEmail());
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
 
-        if(user==null){
+
+        if (userOptional.isEmpty()) {
+            // If user not found, create a new one
             User createdUser = new User();
             createdUser.setEmail(request.getEmail());
             createdUser.setFullName(request.getFullName());
@@ -116,10 +116,17 @@ public class AuthService implements IAuthService {
 
             userRepository.save(createdUser);
 
+            // Create a new Cart for the new user
             Cart cart = new Cart();
-            cart.setUser(user);
+            cart.setUser(createdUser);  // Use the createdUser object
             cartRepository.save(cart);
+
+            // Use createdUser since it wasn't found earlier
+            userOptional = Optional.of(createdUser);
         }
+
+        // Use the existing or newly created user
+        User user = userOptional.get();
 
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(USER_ROLE.ROLE_CUSTOMER.toString()));
@@ -148,9 +155,15 @@ public class AuthService implements IAuthService {
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
-        String roleName = authorities.isEmpty()?null: authorities.iterator().next().getAuthority();
+//        String roleName = authorities.isEmpty()?null: authorities.iterator().next().getAuthority();
 
-        authResponse.setRole(USER_ROLE.valueOf(roleName));
+        if (userName.startsWith("seller_")) {
+            authResponse.setRole(USER_ROLE.ROLE_SELLER); // Set role explicitly as seller
+        } else {
+            authResponse.setRole(USER_ROLE.ROLE_CUSTOMER);
+        }
+
+//        authResponse.setRole(USER_ROLE.valueOf(roleName));
 
         return authResponse;
 
@@ -178,4 +191,6 @@ public class AuthService implements IAuthService {
         return new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
 
     }
+
+
 }

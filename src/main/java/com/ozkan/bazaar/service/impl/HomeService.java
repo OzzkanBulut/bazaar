@@ -39,14 +39,14 @@ public class HomeService implements IHomeService {
 
         List<HomeCategory> dealCategories = allCategories.stream()
                 .filter(category ->
-                        category.getSection() == HomeCategorySection.DEALS)
+                        category.getSection() == HomeCategorySection.DEAL)
                 .collect(Collectors.toList());
 
         List<Deal> createdDeals = new ArrayList<>();
 
         if (dealRepository.findAll().isEmpty()) {
             List<Deal> deals = allCategories.stream()
-                    .filter(category -> category.getSection() == HomeCategorySection.DEALS)
+                    .filter(category -> category.getSection() == HomeCategorySection.DEAL)
                     .map(category -> new Deal(null, 10, category))
                     .collect(Collectors.toList());
 

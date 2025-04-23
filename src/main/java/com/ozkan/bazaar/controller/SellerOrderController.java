@@ -3,6 +3,7 @@ package com.ozkan.bazaar.controller;
 import com.ozkan.bazaar.domain.OrderStatus;
 import com.ozkan.bazaar.model.Order;
 import com.ozkan.bazaar.model.Seller;
+import com.ozkan.bazaar.repository.IOrderRepository;
 import com.ozkan.bazaar.service.IOrderService;
 import com.ozkan.bazaar.service.ISellerService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class SellerOrderController {
 
     private final IOrderService orderService;
     private final ISellerService sellerService;
+    private final IOrderRepository orderRepository;
 
     @GetMapping
     public ResponseEntity<List<Order>> getAllOrdersHandler(
@@ -39,6 +41,16 @@ public class SellerOrderController {
 
         Order order = orderService.updateOrderStatus(orderId, orderStatus);
         return new ResponseEntity<>(order, HttpStatus.OK);
+
+    }
+
+    @PostMapping
+    public ResponseEntity<Order> createOrder(
+            @RequestHeader("Authorization") String jwt,
+            @RequestBody Order order
+    ){
+        return ResponseEntity.ok(orderRepository.save(order));
+
 
     }
 }

@@ -3,9 +3,9 @@ package com.ozkan.bazaar.controller;
 import com.ozkan.bazaar.domain.PaymentMethod;
 import com.ozkan.bazaar.model.*;
 import com.ozkan.bazaar.repository.IPaymentOrderRepository;
+import com.ozkan.bazaar.request.AddressRequest;
 import com.ozkan.bazaar.response.PaymentLinkResponse;
 import com.ozkan.bazaar.service.*;
-import com.razorpay.PaymentLink;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,40 +29,46 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<PaymentLinkResponse> createOrderHandler(
-            @RequestBody Address shippingAddress,
-            @RequestParam PaymentMethod paymentMethod,
+            @RequestBody AddressRequest addressRequest,
             @RequestHeader("Authorization") String jwt
     ) throws Exception {
 
         User user = userService.findUserByJwtToken(jwt);
         Cart cart = cartService.findUserCart(user);
 
+        Address shippingAddress = userService.findAddressById(addressRequest.getAddressId());
+        if (shippingAddress == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new PaymentLinkResponse("Address not found"));
+        }
+
+        // 1. Create Order objects (but do not persist yet)
         Set<Order> orders = orderService.createOrder(user, shippingAddress, cart);
 
-        PaymentOrder paymentOrder = paymentService.createOrder(user, orders);
+        // 2. Create PaymentOrder and set its details
+        PaymentOrder paymentOrder = new PaymentOrder();
+        paymentOrder.setUser(user);
+        paymentOrder.setAmount((long) cart.getTotalMrpPrice()); // Or use proper calculation
+        paymentOrder.setPaymentMethod(PaymentMethod.STRIPE); // Or dynamic from frontend
+        paymentOrder.setOrders(orders); // Assign orders to PaymentOrder
 
-        PaymentLinkResponse res = new PaymentLinkResponse();
-
-        if (paymentMethod.equals(PaymentMethod.RAZORPAY)) {
-            PaymentLink payment = paymentService.createRazorpayPaymentLink(user, paymentOrder.getAmount(),
-                    paymentOrder.getId());
-            String paymentUrl = payment.get("short_url");
-            String paymentUrlId = payment.get("id");
-
-            res.setPayment_link_url(paymentUrl);
-
-            paymentOrder.setPaymentLinkId(paymentUrlId);
-            paymentOrderRepository.save(paymentOrder);
-        } else {
-            String paymentUrl = paymentService.createStripePaymentLink(user, paymentOrder.getAmount(),
-                    paymentOrder.getId());
-
-            res.setPayment_link_url(paymentUrl);
+        // 3. Set the paymentOrder in each Order
+        for (Order order : orders) {
+            order.setPaymentOrder(paymentOrder);
         }
+
+        // 4. Save PaymentOrder (which cascades to Orders)
+        String paymentUrl = "payment_url";
+        String paymentUrlId = "payment_url_id";
+        paymentOrder.setPaymentLinkId(paymentUrlId);
+        paymentOrderRepository.save(paymentOrder);
+
+        // 5. Prepare response
+        PaymentLinkResponse res = new PaymentLinkResponse();
+        res.setPayment_link_url(paymentUrl);
+
         return new ResponseEntity<>(res, HttpStatus.OK);
-
     }
-
 
     @GetMapping("/user")
     public ResponseEntity<List<Order>> userOrderHistoryHandler(
@@ -81,7 +87,6 @@ public class OrderController {
         User user = userService.findUserByJwtToken(jwt);
         Order order = orderService.findOrderById(orderId);
         return new ResponseEntity<>(order, HttpStatus.OK);
-
     }
 
     @GetMapping("/item/{orderItemId}")
@@ -93,7 +98,6 @@ public class OrderController {
         return ResponseEntity.ok(item);
     }
 
-
     @GetMapping("/{orderId}/cancel")
     public ResponseEntity<Order> cancelOrder(
             @PathVariable Long orderId,
@@ -102,13 +106,6 @@ public class OrderController {
         User user = userService.findUserByJwtToken(jwt);
         Order order = orderService.cancelOrder(orderId, user);
 
-        Seller seller = sellerService.getSellerProfile(jwt);
-        SellerReport report = sellerReportService.getSellerReport(seller);
-        report.setCanceledOrders(report.getCanceledOrders() + 1);
-        report.setTotalRefunds(report.getTotalRefunds() + order.getTotalSellingPrice());
-        sellerReportService.updateSellerReport(report);
         return new ResponseEntity<>(order, HttpStatus.OK);
-
     }
-
 }

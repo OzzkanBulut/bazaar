@@ -24,13 +24,20 @@ public class DealService implements IDealService {
 
     @Override
     public Deal createDeal(Deal deal) {
+        if (deal.getCategory() == null || deal.getCategory().getId() == null) {
+            throw new IllegalArgumentException("Category ID must not be null");
+        }
 
-        HomeCategory homeCategory = homeCategoryRepository.findById(deal.getCategory().getId()).orElse(null);
+        HomeCategory homeCategory = homeCategoryRepository.findById(deal.getCategory().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Category not found"));
+
         Deal newDeal = new Deal();
         newDeal.setCategory(homeCategory);
         newDeal.setDiscount(deal.getDiscount());
+
         return dealRepository.save(newDeal);
     }
+
 
     @Override
     public Deal updateDeal(Deal deal, Long id) throws Exception {

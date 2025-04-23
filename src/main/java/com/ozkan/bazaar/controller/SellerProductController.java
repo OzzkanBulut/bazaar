@@ -7,6 +7,8 @@ import com.ozkan.bazaar.request.CreateProductRequest;
 import com.ozkan.bazaar.service.IProductService;
 import com.ozkan.bazaar.service.ISellerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +24,14 @@ public class SellerProductController {
     private final ISellerService sellerService;
 
     @GetMapping
-    public ResponseEntity<List<Product>> getProductsBySellerId(
-            @RequestHeader("Authorization") String jwt
+    public ResponseEntity<Page<Product>> getProductsBySellerId(
+            @RequestHeader("Authorization") String jwt,
+            Pageable pageable
     ) throws Exception {
 
         Seller seller = sellerService.getSellerProfile(jwt);
 
-        List<Product> products = productService.getProductBySellerId(seller.getId());
+        Page<Product> products = productService.getProductsBySellerId(seller.getId(), pageable);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
@@ -50,14 +53,28 @@ public class SellerProductController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/{productId}")
+    public ResponseEntity<Product> getProductById(@PathVariable Long productId) throws ProductException {
+        productService.getProductById(productId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PutMapping("/{productId}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long productId,@RequestBody Product product) throws ProductException {
-        Product updatedProduct = productService.updateProduct(productId,product);
+    public ResponseEntity<Product> updateProduct(
+            @PathVariable Long productId,
+            @RequestBody Product product,
+            @RequestHeader("Authorization") String jwt) throws Exception {
+
+        // Extract seller ID from the JWT token (implement this method)
+        Seller seller = sellerService.getSellerProfile(jwt);
+        Long sellerId = seller.getId();
+
+        // Call service to update product
+        Product updatedProduct = productService.updateProduct(productId, sellerId, product);
 
         return ResponseEntity.ok(updatedProduct);
-
-
     }
+
 
 
 }

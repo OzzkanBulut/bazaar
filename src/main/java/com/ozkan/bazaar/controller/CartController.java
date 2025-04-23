@@ -33,7 +33,7 @@ public class CartController {
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
-    @PutMapping("/add")
+    @PostMapping("/add")
     public ResponseEntity<CartItem> addItemToCart(@RequestBody AddItemRequest req,
                                                   @RequestHeader("Authorization") String jwt) throws Exception {
 

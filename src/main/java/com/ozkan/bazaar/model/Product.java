@@ -18,9 +18,12 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
+    private Long id;
+    @Column(length = 500)
     private String title;
+
+    @Column(columnDefinition = "TEXT")  // PostgreSQL'de TEXT uzunluk sınırı olmadan kullanılabilir
 
     private String description;
 
@@ -56,4 +59,7 @@ public class Product {
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
+
+    public Product(String title, String description, int mrpPrice, int sellingPrice, int discountPercentage, int quantity, String color, List<String> images, int numRatings, Category category, LocalDateTime createdAt, String sizes, List<Review> reviews, Seller seller) {
+    }
 }
