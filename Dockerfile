@@ -20,4 +20,4 @@ RUN ./mvnw clean package -DskipTests
 EXPOSE 8080
 
 # Run the built .jar file from target/
-ENTRYPOINT ["java", "-jar", "target/YOUR_JAR_NAME.jar"]
+ENTRYPOINT ["java", "-jar", "target/bazaar-0.0.1-SNAPSHOT.jar"]
