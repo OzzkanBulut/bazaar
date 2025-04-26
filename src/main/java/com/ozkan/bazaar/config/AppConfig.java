@@ -49,7 +49,7 @@ public class AppConfig {
     private CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+        cfg.setAllowedOrigins(Collections.singletonList("https://bazaar-front.vercel.app"));
         cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         cfg.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
         cfg.setAllowedMethods(Collections.singletonList("*"));
