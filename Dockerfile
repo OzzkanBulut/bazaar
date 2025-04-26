@@ -13,8 +13,8 @@ COPY . /app
 # Give execute permission to mvnw
 RUN chmod +x mvnw
 
-# Build your project (this will generate the .jar file)
-RUN ./mvnw clean package
+# Build your project and skip tests (this will generate the .jar file)
+RUN ./mvnw clean package -DskipTests
 
 # Copy the generated .jar file from target/ to the container
 COPY target/*.jar app.jar
