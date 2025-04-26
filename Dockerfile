@@ -1,11 +1,11 @@
-# Use a Java runtime as base image
-FROM eclipse-temurin:17-jdk
+# Use Java 21 runtime as base image
+FROM eclipse-temurin:21-jdk
 
-# Set working directory
+# Set working directory inside container
 WORKDIR /app
 
-# Copy the jar file into the container
-COPY build/libs/*.jar app.jar
+# Copy the .jar file from the target folder (correct directory for Maven)
+COPY target/*.jar app.jar
 
 # Expose port 8080
 EXPOSE 8080
