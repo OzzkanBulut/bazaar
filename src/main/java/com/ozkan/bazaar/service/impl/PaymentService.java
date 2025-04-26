@@ -107,8 +107,8 @@ public class PaymentService implements IPaymentService {
                         .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                         .addAllLineItem(lineItems)  // Dinamik olarak oluşturduğumuz line item'ları ekle
                         .setMode(SessionCreateParams.Mode.PAYMENT)
-                        .setSuccessUrl("http://localhost:3000/order-success")
-                        .setCancelUrl("http://localhost:3000/cart")
+                        .setSuccessUrl("https://bazaar-front.vercel.app/order-success")
+                        .setCancelUrl("https://bazaar-front.vercel.app/cart")
                         .build()
         );
 
