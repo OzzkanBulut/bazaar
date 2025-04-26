@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/payment")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://bazaar-front.vercel.app")
 
 public class PaymentController {
 
