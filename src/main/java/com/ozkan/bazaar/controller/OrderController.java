@@ -57,15 +57,14 @@ public class OrderController {
             order.setPaymentOrder(paymentOrder);
         }
 
-        // 4. Save PaymentOrder (which cascades to Orders)
-        String paymentUrl = "payment_url";
-        String paymentUrlId = "payment_url_id";
-        paymentOrder.setPaymentLinkId(paymentUrlId);
-        paymentOrderRepository.save(paymentOrder);
+        // 3. Stripe Checkout Link Oluştur
+        String checkoutUrl = ((IPaymentService) paymentService).createStripeSession(paymentOrder,paymentOrder.getAmount()*100);
+        paymentOrder.setPaymentLinkId("stripe_session_id"); // İstersen set et
+        paymentOrderRepository.save(paymentOrder); // Güncelle
 
-        // 5. Prepare response
         PaymentLinkResponse res = new PaymentLinkResponse();
-        res.setPayment_link_url(paymentUrl);
+        res.setPayment_link_url(checkoutUrl);
+        res.setPayment_order_id(paymentOrder.getId()); // BURADA paymentOrderId DÖN
 
         return new ResponseEntity<>(res, HttpStatus.OK);
     }

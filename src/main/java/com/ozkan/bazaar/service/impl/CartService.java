@@ -10,7 +10,6 @@ import com.ozkan.bazaar.service.ICartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 @Service
@@ -38,7 +37,6 @@ public class CartService implements ICartService {
             cartItem.setSellingPrice(totalPrice);
             cartItem.setMrpPrice(quantity * product.getMrpPrice());
 
-
             cart.getCartItems().add(cartItem);
             cartItem.setCart(cart);
 
@@ -46,7 +44,6 @@ public class CartService implements ICartService {
         }
 
         return isPresent;
-
     }
 
     @Override
@@ -62,12 +59,13 @@ public class CartService implements ICartService {
             cart.setTotalSellingPrice(0);
             cart.setTotalItem(0);
             cart.setDiscount(0);
-        }else{
+        } else {
 
             int totalPrice = 0;
             int totalDiscountedPrice = 0;
             int totalItem = 0;
 
+            // Calculate total prices and items
             for (CartItem cartItem : cart.getCartItems()) {
                 totalPrice += cartItem.getMrpPrice();
                 totalDiscountedPrice += cartItem.getSellingPrice();
@@ -78,13 +76,47 @@ public class CartService implements ICartService {
             cart.setTotalItem(totalItem);
             cart.setTotalSellingPrice(totalDiscountedPrice);
             cart.setDiscount(calculateDiscountPercentage(totalPrice, totalDiscountedPrice));
-
         }
         return cartRepository.save(cart);
-
     }
 
+    /**
+     * Calculates the discount percentage based on MRP and discounted price
+     * @param totalPrice - total original price (MRP)
+     * @param totalDiscountedPrice - total discounted price (selling price)
+     * @return discount percentage
+     */
     private int calculateDiscountPercentage(int totalPrice, int totalDiscountedPrice) {
+        if (totalPrice == 0) {
+            return 0;
+        }
+        // Calculate the discount percentage
+        return (int) (((double) (totalPrice - totalDiscountedPrice) / totalPrice) * 100);
+    }
+
+    /**
+     * Applies coupon discount to the cart if a valid coupon is applied
+     * @param cart - the cart object
+     * @param couponCode - the code of the applied coupon
+     */
+    public void applyCoupon(Cart cart, String couponCode) {
+        // Assuming a simple example where couponCode maps to a discount percentage
+        int discount = getCouponDiscount(couponCode);
+        cart.setDiscount(discount);
+        cart.setTotalSellingPrice(cart.getTotalSellingPrice() - discount);
+    }
+
+    /**
+     * Dummy method to simulate coupon discount fetching
+     * @param couponCode - the code of the coupon
+     * @return - the discount value
+     */
+    private int getCouponDiscount(String couponCode) {
+        // For demonstration, returning a fixed discount value.
+        // In a real-world scenario, you should query a coupon database or service.
+        if (couponCode.equals("SAVE10")) {
+            return 10; // 10 units off
+        }
         return 0;
     }
 }
