@@ -13,14 +13,11 @@ COPY . /app
 # Give execute permission to mvnw
 RUN chmod +x mvnw
 
-# Build your project and skip tests (this will generate the .jar file)
+# Build your project and skip tests (this will generate the .jar file inside /app/target/)
 RUN ./mvnw clean package -DskipTests
-
-# Copy the generated .jar file from target/ to the container
-COPY target/*.jar app.jar
 
 # Expose port 8080 for your app
 EXPOSE 8080
 
-# Run the .jar file
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run the built .jar file from target/
+ENTRYPOINT ["java", "-jar", "target/YOUR_JAR_NAME.jar"]
