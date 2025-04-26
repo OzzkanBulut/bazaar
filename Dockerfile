@@ -10,6 +10,9 @@ RUN apt-get update && apt-get install -y maven
 # Copy your project files into the Docker container
 COPY . /app
 
+# Give execute permission to mvnw
+RUN chmod +x mvnw
+
 # Build your project (this will generate the .jar file)
 RUN ./mvnw clean package
 
