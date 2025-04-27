@@ -85,11 +85,29 @@ public class AuthService implements IAuthService {
         verificationCode.setEmail(email);
         verificationCodeRepository.save(verificationCode);
 
-        String subject = "The bazaar login/signup otp";
-        String text = "Your otp is - "+otp;
+        String subject = "Your Bazaar Login Code";
+
+        String htmlContent = "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;\">\n" +
+                "    <div style=\"text-align: center;\">\n" +
+                "        <img src='https://yourdomain.com/logo.png' alt='Bazaar Logo' style='width: 100px; margin-bottom: 20px;'>\n" +
+                "        <h2>Welcome to Bazaar!</h2>\n" +
+                "    </div>\n" +
+                "    <p>Hello,</p>\n" +
+                "    <p>We received a request to sign in to your Bazaar account. Please use the following one-time code to complete your login:</p>\n" +
+                "    <div style=\"text-align: center; margin: 30px 0;\">\n" +
+                "        <div style=\"display: inline-block; padding: 10px 20px; font-size: 24px; color: #fff; background-color: #4CAF50; border-radius: 5px;\">\n" +
+                "            " + otp + "\n" +
+                "        </div>\n" +
+                "    </div>\n" +
+                "    <p>This code will expire shortly for your security. If you did not request this, you can safely ignore this email.</p>\n" +
+                "    <p>Thank you,<br>The Bazaar Team</p>\n" +
+                "    <hr>\n" +
+                "    <p style=\"font-size: 12px; color: #888; text-align: center;\">© 2025 Bazaar. All rights reserved.</p>\n" +
+                "</div>";
 
 
-        emailService.sendVerificationOtpEmail(email,otp,subject,text);
+
+        emailService.sendVerificationOtpEmail(email,otp,subject,htmlContent);
 
     }
 

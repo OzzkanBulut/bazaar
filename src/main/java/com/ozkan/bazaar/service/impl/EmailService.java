@@ -19,25 +19,23 @@ public class EmailService {
 
     private final JavaMailSender javaMailSender;
 
-    public void sendVerificationOtpEmail(String userEmail, String otp, String subject,
-                                         String text) throws MessagingException {
-
+    public void sendVerificationOtpEmail(String userEmail, String otp, String subject, String text) throws MessagingException {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, "utf-8");
 
             mimeMessageHelper.setSubject(subject);
-            mimeMessageHelper.setText(text, true); // Set to true for HTML content
+            mimeMessageHelper.setText(text, true); // true -> send as HTML
             mimeMessageHelper.setTo(userEmail);
-            mimeMessageHelper.setFrom("ozkanb66@gmail.com"); // Optional if not in properties
+            mimeMessageHelper.setFrom("ozkanb66@gmail.com"); // Optional if set in application.properties
 
             javaMailSender.send(mimeMessage);
             logger.info("Email sent successfully to {}", userEmail);
 
-
-        } catch (MailException e) {
+        } catch (MessagingException | MailException e) {
             logger.error("Error while sending email to {}: {}", userEmail, e.getMessage(), e);
             throw new MailSendException("Failed to send email", e);
         }
     }
+
 }
