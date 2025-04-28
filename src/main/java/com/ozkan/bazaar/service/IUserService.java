@@ -8,4 +8,5 @@ public interface IUserService {
     public User findUserByJwtToken(String jwt) throws Exception;
     public User findUserByEmail(String email) throws Exception;
     public Address findAddressById(Long addressId);
+    public Address addAddressToUser(String jwt, Address address) throws Exception;
 }

@@ -39,4 +39,18 @@ public class UserService implements IUserService {
         }
         return addressRepository.findById(addressId).get();
     }
+
+    @Override
+    public Address addAddressToUser(String jwt, Address address) throws Exception {
+        // Get user from JWT
+        User user = findUserByJwtToken(jwt);
+
+        // Set the user to the address
+        user.getAddresses().add(address);
+
+        // Save the address in the repository
+        Address savedAddress = addressRepository.save(address);
+
+        return savedAddress;
+    }
 }

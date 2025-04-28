@@ -113,6 +113,7 @@ public class AuthService implements IAuthService {
 
     @Override
     public String createUser(SignUpRequest request) throws Exception {
+            
 
         VerificationCode verificationCode = verificationCodeRepository.findByEmail(request.getEmail());
 
