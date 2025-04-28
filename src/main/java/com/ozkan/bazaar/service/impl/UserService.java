@@ -41,9 +41,9 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Address addAddressToUser(String jwt, Address address) throws Exception {
+    public Address addAddressToUser(User user, Address address) throws Exception {
         // Get user from JWT
-        User user = findUserByJwtToken(jwt);
+
 
         // Set the user to the address
         user.getAddresses().add(address);

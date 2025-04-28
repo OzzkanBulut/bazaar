@@ -1,6 +1,7 @@
 package com.ozkan.bazaar.controller;
 
 import com.ozkan.bazaar.model.Address;
+import com.ozkan.bazaar.model.User;
 import com.ozkan.bazaar.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +15,10 @@ public class AddressController {
 
     // Endpoint to add a new address for the logged-in user
     @PostMapping
-    public Address addAddress(@RequestBody Address address, @RequestHeader("Authorization") String authorizationHeader) throws Exception {
+    public Address addAddress(@RequestBody Address address, @RequestHeader("Authorization") String jwt) throws Exception {
         // Extract JWT from Authorization header
-        String jwt = authorizationHeader.substring(7); // "Bearer " is 7 characters long
-        return userService.addAddressToUser(jwt, address);
+        User user = userService.findUserByJwtToken(jwt);
+        return userService.addAddressToUser(user, address);
     }
 
     // Additional endpoints as needed
