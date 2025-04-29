@@ -88,13 +88,11 @@ public class AuthService implements IAuthService {
         String subject = "Your Bazaar Login Code";
 
         String htmlContent =
-                "<div style=\"padding: 0; margin: 0;\">\n" +
-                        "  <img src=\"https://drive.google.com/uc?export=view&id=1HAquy2tQAtmxpUVLlr53eUoSjegp82BW\" \n" +
-                        "       alt=\"Bazaar Logo\"\n" +
-                        "       style=\"display: block; width: 600px; height: 200px; object-fit: cover; border-radius: 10px 10px 0 0;\">\n" +
-                        "</div>\n" +
-                        "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 0 0 10px 10px;\">\n" +
+                "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;\">\n" +
                         "    <div style=\"text-align: center;\">\n" +
+                        "        <img src=\"https://drive.google.com/uc?export=view&id=1HAquy2tQAtmxpUVLlr53eUoSjegp82BW\"\n" +
+                        "             alt=\"Bazaar Logo\"\n" +
+                        "             style=\"width: 100%; height: auto; object-fit: contain; border-radius: 10px; margin-bottom: 20px;\">\n" +
                         "        <h2>Welcome to Bazaar!</h2>\n" +
                         "    </div>\n" +
                         "    <p>Hello,</p>\n" +
@@ -109,6 +107,7 @@ public class AuthService implements IAuthService {
                         "    <hr>\n" +
                         "    <p style=\"font-size: 12px; color: #888; text-align: center;\">© 2025 Bazaar. All rights reserved.</p>\n" +
                         "</div>";
+
 
 
 
