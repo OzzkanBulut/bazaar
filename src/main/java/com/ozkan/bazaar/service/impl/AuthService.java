@@ -91,7 +91,7 @@ public class AuthService implements IAuthService {
                 "    <div style=\"text-align: center;\">\n" +
                 "        <img src=\"https://raw.githubusercontent.com/OzzkanBulut/bazaar/refs/heads/main/0d708ade-dd4e-4571-be2b-8ac31a2e45a0.png?token=GHSAT0AAAAAADCZFYXVYMJ4TXPBMPS5IARQ2AQXHUA\"\n" +
                 "     alt=\"Bazaar Logo\"\n" +
-                "     style=\"display: block; width: 100%; height: 300px; object-fit: contain; margin-bottom: 20px;\">\n\n\n" +
+                "     style=\"display: block; width: 100%; height: 300px; object-fit: contain; margin-bottom: 20px;\">\n" +
                 "        <h2>Welcome to Bazaar!</h2>\n" +
                 "    </div>\n" +
                 "    <p>Hello,</p>\n" +
