@@ -87,25 +87,29 @@ public class AuthService implements IAuthService {
 
         String subject = "Your Bazaar Login Code";
 
-        String htmlContent = "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;\">\n" +
-                "    <div style=\"text-align: center;\">\n" +
-                "        <img src=\"https://drive.google.com/uc?export=view&id=1HAquy2tQAtmxpUVLlr53eUoSjegp82BW\n\"\n" +
-                "     alt=\"Bazaar Logo\"\n" +
-                "     style=\"display: block; width: 200%; height: 200px; object-fit: contain; margin-bottom: 20px;\">\n\n\n" +
-                "        <h2>Welcome to Bazaar!</h2>\n" +
-                "    </div>\n" +
-                "    <p>Hello,</p>\n" +
-                "    <p>We received a request to sign in to your Bazaar account. Please use the following one-time code to complete your login:</p>\n" +
-                "    <div style=\"text-align: center; margin: 30px 0;\">\n" +
-                "        <div style=\"display: inline-block; padding: 10px 20px; font-size: 24px; color: #fff; background-color: #4CAF50; border-radius: 5px;\">\n" +
-                "            " + otp + "\n" +
-                "        </div>\n" +
-                "    </div>\n" +
-                "    <p>This code will expire shortly for your security. If you did not request this, you can safely ignore this email.</p>\n" +
-                "    <p>Thank you,<br>The Bazaar Team</p>\n" +
-                "    <hr>\n" +
-                "    <p style=\"font-size: 12px; color: #888; text-align: center;\">© 2025 Bazaar. All rights reserved.</p>\n" +
-                "</div>";
+        String htmlContent =
+                "<div style=\"padding: 0; margin: 0;\">\n" +
+                        "  <img src=\"https://drive.google.com/uc?export=view&id=1HAquy2tQAtmxpUVLlr53eUoSjegp82BW\" \n" +
+                        "       alt=\"Bazaar Logo\"\n" +
+                        "       style=\"display: block; width: 100%; height: auto; object-fit: cover; border-radius: 10px 10px 0 0;\">\n" +
+                        "</div>\n" +
+                        "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 0 0 10px 10px;\">\n" +
+                        "    <div style=\"text-align: center;\">\n" +
+                        "        <h2>Welcome to Bazaar!</h2>\n" +
+                        "    </div>\n" +
+                        "    <p>Hello,</p>\n" +
+                        "    <p>We received a request to sign in to your Bazaar account. Please use the following one-time code to complete your login:</p>\n" +
+                        "    <div style=\"text-align: center; margin: 30px 0;\">\n" +
+                        "        <div style=\"display: inline-block; padding: 10px 20px; font-size: 24px; color: #fff; background-color: #4CAF50; border-radius: 5px;\">\n" +
+                        "            " + otp + "\n" +
+                        "        </div>\n" +
+                        "    </div>\n" +
+                        "    <p>This code will expire shortly for your security. If you did not request this, you can safely ignore this email.</p>\n" +
+                        "    <p>Thank you,<br>The Bazaar Team</p>\n" +
+                        "    <hr>\n" +
+                        "    <p style=\"font-size: 12px; color: #888; text-align: center;\">© 2025 Bazaar. All rights reserved.</p>\n" +
+                        "</div>";
+
 
 
 
