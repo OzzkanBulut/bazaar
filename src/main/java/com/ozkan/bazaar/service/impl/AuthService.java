@@ -89,7 +89,7 @@ public class AuthService implements IAuthService {
 
         String htmlContent = "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;\">\n" +
                 "    <div style=\"text-align: center;\">\n" +
-                "        <img src='https://i.ibb.co/v6NFygNb/0d708ade-dd4e-4571-be2b-8ac31a2e45a0.png' alt='Bazaar Logo' style='width: 100px; margin-bottom: 20px;'>\n" +
+                "        <img src='https://i.postimg.cc/9VtVXcDS/0d708ade-dd4e-4571-be2b-8ac31a2e45a0.png' alt='Bazaar Logo' style='width: 130px; height: 50px; margin-bottom: 20px;'>\n" +
                 "        <h2>Welcome to Bazaar!</h2>\n" +
                 "    </div>\n" +
                 "    <p>Hello,</p>\n" +
@@ -104,6 +104,7 @@ public class AuthService implements IAuthService {
                 "    <hr>\n" +
                 "    <p style=\"font-size: 12px; color: #888; text-align: center;\">© 2025 Bazaar. All rights reserved.</p>\n" +
                 "</div>";
+
 
 
 
