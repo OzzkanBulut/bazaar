@@ -92,7 +92,7 @@ public class AuthService implements IAuthService {
                         "    <div style=\"text-align: center;\">\n" +
                         "        <img src=\"https://drive.google.com/uc?export=view&id=1HAquy2tQAtmxpUVLlr53eUoSjegp82BW\"\n" +
                         "             alt=\"Bazaar Logo\"\n" +
-                        "             style=\"width: 100%; height: auto; object-fit: contain; border-radius: 10px; margin-bottom: 20px;\">\n" +
+                        "             style=\"width: 100%; max-height: 150px; object-fit: contain; border-radius: 10px; margin-bottom: 20px;\">\n" +
                         "        <h2>Welcome to Bazaar!</h2>\n" +
                         "    </div>\n" +
                         "    <p>Hello,</p>\n" +
