@@ -82,7 +82,7 @@ public class SellerController {
 
         String subject = "Bazaar Email Verification Code";
         String text = "Welcome to the Bazaar, verify your account using this link ";
-        String frontend_url = "http://localhost:3000/verify-seller";
+        String frontend_url = "https://bazaar-front.vercel.app/verify-seller";
         emailService.sendVerificationOtpEmail(seller.getEmail(), verificationCode.getOtp(),subject,text+frontend_url);
 
         return new ResponseEntity<>(savedSeller,HttpStatus.OK);
