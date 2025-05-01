@@ -17,6 +17,7 @@ import java.util.Set;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/orders")
+@CrossOrigin(origins = "https://bazaar-front.vercel.app", allowCredentials = "true")
 public class OrderController {
 
     private final IOrderService orderService;

@@ -6,6 +6,9 @@ import com.ozkan.bazaar.model.Seller;
 import com.ozkan.bazaar.repository.IOrderRepository;
 import com.ozkan.bazaar.service.IOrderService;
 import com.ozkan.bazaar.service.ISellerService;
+import com.stripe.exception.SignatureVerificationException;
+import com.stripe.model.Event;
+import com.stripe.net.Webhook;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,8 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/seller/orders")
+@CrossOrigin(origins = "https://bazaar-front.vercel.app", allowCredentials = "true")
+
 public class SellerOrderController {
 
     private final IOrderService orderService;
@@ -53,4 +58,5 @@ public class SellerOrderController {
 
 
     }
+
 }

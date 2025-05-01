@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -16,6 +17,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,16 +33,19 @@ public class AppConfig {
         http.sessionManagement(management -> management.sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS
                 )).authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // ✅ This line is missing
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/api/products/*/reviews").permitAll()
                         .requestMatchers("/sellers/**").permitAll()
+                        .requestMatchers("/seller/**").permitAll()
                         .requestMatchers("/auth/signin").permitAll()  // Allow unauthenticated access to signin
+
 
                         .anyRequest().permitAll())
 
                 .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
+                .cors().and()
+                .csrf().disable();
 
 
         return http.build();
@@ -52,8 +58,8 @@ public class AppConfig {
         cfg.setAllowedOrigins(Collections.singletonList("https://bazaar-front.vercel.app"));
         cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         cfg.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
-        cfg.setAllowedMethods(Collections.singletonList("*"));
-        cfg.setAllowedHeaders(Collections.singletonList("*"));
+//        cfg.setAllowedMethods(Collections.singletonList("*"));
+//        cfg.setAllowedHeaders(Collections.singletonList("*"));
         cfg.setAllowCredentials(true);
         cfg.setExposedHeaders(Collections.singletonList("Authorization"));
         cfg.setMaxAge(3600L);
@@ -83,6 +89,22 @@ public RestTemplate restTemplate() {
     @Bean
     public RestTemplate restTemplatee(RestTemplateBuilder builder) {
         return builder.build();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("https://bazaar-front.vercel.app")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .exposedHeaders("Authorization")
+                        .allowCredentials(true)
+                        .maxAge(3600L);
+            }
+        };
     }
 
 
