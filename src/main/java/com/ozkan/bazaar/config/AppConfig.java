@@ -48,23 +48,23 @@ public class AppConfig {
     }
 
     private CorsConfigurationSource corsConfigurationSource() {
-
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(Collections.singletonList("https://bazaar-front.vercel.app"));
-        cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        cfg.setAllowedOrigins(Arrays.asList("https://bazaar-front.vercel.app"));
+        cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         cfg.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
         cfg.setAllowCredentials(true);
-        cfg.setExposedHeaders(Collections.singletonList("Authorization"));
+        cfg.addExposedHeader("Authorization");
+        cfg.addExposedHeader("Content-Type");
         cfg.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", cfg); // Register CORS configuration for all endpoints
+        source.registerCorsConfiguration("/**", cfg);
         return source;
-
     }
 
 
-;
+
+    ;
 
 
 @Bean
