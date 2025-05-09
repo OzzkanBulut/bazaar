@@ -31,6 +31,7 @@ public class AppConfig {
                         SessionCreationPolicy.STATELESS
                 )).authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/ws/**", "/topic/**").permitAll()
                         .requestMatchers("/api/products/*/reviews").permitAll()
                         .requestMatchers("/sellers/**").permitAll()
                         .requestMatchers("/auth/signin").permitAll()  // Allow unauthenticated access to signin
