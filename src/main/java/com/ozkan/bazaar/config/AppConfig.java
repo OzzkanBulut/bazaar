@@ -53,8 +53,6 @@ public class AppConfig {
         cfg.setAllowedOrigins(Collections.singletonList("https://bazaar-front.vercel.app"));
         cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         cfg.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
-        cfg.setAllowedMethods(Collections.singletonList("*"));
-        cfg.setAllowedHeaders(Collections.singletonList("*"));
         cfg.setAllowCredentials(true);
         cfg.setExposedHeaders(Collections.singletonList("Authorization"));
         cfg.setMaxAge(3600L);
