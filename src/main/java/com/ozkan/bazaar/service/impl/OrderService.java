@@ -1,13 +1,17 @@
 package com.ozkan.bazaar.service.impl;
 
+import com.ozkan.bazaar.config.RabbitMQConfig;
 import com.ozkan.bazaar.domain.OrderStatus;
+import com.ozkan.bazaar.domain.OrderStatusMessage;
 import com.ozkan.bazaar.domain.PaymentStatus;
+import com.ozkan.bazaar.event.OrderPlacedEvent;
 import com.ozkan.bazaar.model.*;
 import com.ozkan.bazaar.repository.IAddressRepository;
 import com.ozkan.bazaar.repository.IOrderItemRepository;
 import com.ozkan.bazaar.repository.IOrderRepository;
 import com.ozkan.bazaar.service.IOrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -20,6 +24,8 @@ public class OrderService implements IOrderService {
     private final IOrderRepository orderRepository;
     private final IAddressRepository addressRepository;
     private final IOrderItemRepository orderItemRepository;
+    private final OrderEventPublisher orderEventPublisher;
+    private final RabbitTemplate rabbitTemplate;
 
     @Override
     public Set<Order> createOrder(User user, Address shippingAddress, Cart cart) {
@@ -79,6 +85,9 @@ public class OrderService implements IOrderService {
                 orderItems.add(savedOrderItem);
 
             }
+            orderEventPublisher.publishOrderPlacedEvent(
+                    new OrderPlacedEvent(savedOrder.getId(), sellerId, items.get(0).getProduct().getTitle())
+            );
         }
         return orders;
     }
@@ -106,7 +115,15 @@ public class OrderService implements IOrderService {
         Order order = orderRepository.findOrderById(orderId);
         order.setOrderStatus(orderStatus);
 
-        return orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+        OrderStatusMessage message = new OrderStatusMessage(
+                savedOrder.getId(),
+                orderStatus,
+                savedOrder.getUser().getId().toString() // Assuming you want to alert the customer
+        );
+
+        rabbitTemplate.convertAndSend(RabbitMQConfig.ORDER_STATUS_QUEUE, message);
+        return savedOrder;
     }
 
     @Override
