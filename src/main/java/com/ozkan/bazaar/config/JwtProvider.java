@@ -40,7 +40,9 @@ public class JwtProvider {
     }
 
     public String getEmailFromJwtToken(String jwt){
-        jwt = jwt.substring(7);
+        if (jwt.startsWith("Bearer ")) {
+            jwt = jwt.substring(7);
+        }
 
         Claims claims = Jwts.parserBuilder().setSigningKey(key).build().
                 parseClaimsJws(jwt).getBody();

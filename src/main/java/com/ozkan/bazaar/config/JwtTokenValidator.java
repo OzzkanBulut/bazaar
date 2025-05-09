@@ -24,7 +24,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
     // Paths to skip JWT validation (login, register, WebSocket handshake)
     private static final List<String> EXCLUDED_PATHS = List.of(
             "/auth/signin",
-            "/auth/register",
+            "/auth/signup",
             "/ws",
             "/topic"
     );
@@ -60,7 +60,9 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
             } catch (Exception e) {
-                throw new BadCredentialsException("Invalid JWT Token");
+                e.printStackTrace(); // or log.error(...)
+
+                throw new BadCredentialsException("Invalid JWT Token: "+ e.getMessage());
             }
         }
 
