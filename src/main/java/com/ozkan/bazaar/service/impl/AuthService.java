@@ -28,6 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -83,6 +84,7 @@ public class AuthService implements IAuthService {
 
         verificationCode.setOtp(otp);;
         verificationCode.setEmail(email);
+        verificationCode.setCreatedAt(LocalDateTime.now()); // ✅ Add this line
         verificationCodeRepository.save(verificationCode);
 
         String subject = "Your Bazaar Login Code";
@@ -124,9 +126,14 @@ public class AuthService implements IAuthService {
 
         VerificationCode verificationCode = verificationCodeRepository.findByEmail(request.getEmail());
 
-        if(verificationCode==null || !verificationCode.getOtp().equals(request.getOtp())){
-            throw new Exception("Wrong otp!");
+        if (verificationCode == null || !verificationCode.getOtp().equals(request.getOtp())) {
+            throw new Exception("Wrong OTP!");
         }
+
+        if (verificationCode.getCreatedAt().plusMinutes(3).isBefore(LocalDateTime.now())) {
+            throw new Exception("OTP expired. Please request a new one.");
+        }
+
 
         Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
 
@@ -210,9 +217,15 @@ public class AuthService implements IAuthService {
         }
         VerificationCode verificationCode = verificationCodeRepository.findByEmail(userName);
 
-        if(verificationCode==null || !verificationCode.getOtp().equals(otp)){
-            throw new BadCredentialsException("Wrong Otp");
+        if (verificationCode == null || !verificationCode.getOtp().equals(otp)) {
+            throw new BadCredentialsException("Wrong OTP");
         }
+
+        if (verificationCode.getCreatedAt().plusMinutes(3).isBefore(LocalDateTime.now())) {
+            throw new BadCredentialsException("OTP expired. Please request a new one.");
+        }
+
+
 
         return new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
 

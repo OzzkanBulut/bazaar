@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -26,6 +29,9 @@ public class VerificationCode {
 
     @OneToOne
     private Seller seller;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
 
 
 }
