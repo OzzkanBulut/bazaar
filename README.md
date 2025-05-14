@@ -1,4 +1,4 @@
-# 🛍️ Bazaar Backend – Spring Boot
+# 🛍️ Bazaar Backend 
 
 This repository contains the **backend API** for **Bazaar**, a scalable, full-featured, multi-vendor e-commerce platform. The backend is built with **Spring Boot** and handles authentication, product and order management, payment processing, and role-based access control.
 
@@ -90,6 +90,9 @@ This backend powers the entire business logic and integrates smoothly with a Rea
 
 ## 📁 Project Structure
 
+![image](https://github.com/user-attachments/assets/5857c8b3-4be1-4a4d-8699-f014c99ff117)
+
+
 
 
 ---
@@ -144,7 +147,7 @@ spring.rabbitmq.password=guest
 1. **Clone the repository:**
 
 ```bash
-git clone https://github.com/yourusername/bazaar-backend.git
+git clone https://github.com/OzzkanBulut/bazaar-backend.git
 cd bazaar-backend
 ```
 
@@ -173,11 +176,8 @@ java -jar target/bazaar-backend.jar
 Here are some key endpoints:
 
 ### 🧾 Authentication (OTP)
-- `POST /api/auth/send-otp?email=example@mail.com`  
+- `POST /auth/sent/login-signup-otp"`  
 Sends a one-time password to the user’s email.
-
-- `POST /api/auth/verify-otp`  
-Verifies the OTP and returns a JWT.
 
 ```json
 {
@@ -215,7 +215,7 @@ Verifies the OTP and returns a JWT.
 - Hosted backend: **Render**
 - Frontend: **Vercel**
 - DB: **PostgreSQL (Render)**
-- Queue: **RabbitMQ (local or CloudAMQP)**
+- Queue: **RabbitMQ (CloudAMQP)**
 
 ---
 
